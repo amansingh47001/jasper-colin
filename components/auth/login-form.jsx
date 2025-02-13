@@ -32,7 +32,7 @@ export function LoginForm({ className, ...props }) {
   async function onSubmit(values) {
     try {
       const { data } = await login(values);
-      localStorage.setItem("user", data?.user);
+      localStorage.setItem("user", JSON.stringify(data?.user));
       toast.success(data?.message);
       router.push("/dashboard");
     } catch (err) {
@@ -53,7 +53,6 @@ export function LoginForm({ className, ...props }) {
               <div className="grid gap-6">
                 <div className="grid gap-6">
                   <div className="grid gap-2">
-                    {/* <Label htmlFor="email">Email</Label> */}
                     <TextInput
                       name="username"
                       placeholder="Enter username"
