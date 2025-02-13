@@ -18,21 +18,26 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { LogOut, Search, Eye, Pencil, Trash, Plus } from "lucide-react";
 
+// Fetcher function for GET request
 const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 const Dashboard = () => {
+  // SWR for fetching product data
   const { data: products, mutate } = useSWR("/api/products", fetcher);
 
+  // SWR mutation for adding a new product (POST)
   const { trigger: addProduct } = useSWRMutation(
     "/api/products",
     (url, { arg }) => axios.post(url, arg).then((res) => res.data)
   );
 
+  // SWR mutation for updating a product (PUT)
   const { trigger: updateProduct } = useSWRMutation(
     "/api/products",
     (url, { arg }) => axios.put(`${url}/${arg.id}`, arg).then((res) => res.data)
   );
 
+  // SWR mutation for deleting a product (DELETE)
   const { trigger: deleteProduct } = useSWRMutation(
     "/api/products",
     (url, { arg }) => axios.delete(`${url}/${arg}`).then((res) => res.data)
@@ -51,20 +56,22 @@ const Dashboard = () => {
   const handleInputChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  // Handle Add/Update Product form submission
   const handleSubmit = async () => {
     if (formData.id) {
-      await updateProduct({ id: formData.id, ...formData });
+      await updateProduct({ id: formData.id, ...formData }); // Update existing product
     } else {
-      await addProduct(formData);
+      await addProduct(formData); // Add new product
     }
-    mutate();
-    setIsFormModalOpen(false);
-    setFormData({ name: "", description: "", price: "", category: "" });
+    mutate(); // Refresh the products list after the operation
+    setIsFormModalOpen(false); // Close the modal
+    setFormData({ name: "", description: "", price: "", category: "" }); // Reset form data
   };
 
+  // Handle Product deletion
   const handleDelete = async (id) => {
-    await deleteProduct(id);
-    mutate();
+    await deleteProduct(id); // Delete the selected product
+    mutate(); // Refresh the products list after the operation
   };
 
   return (
@@ -145,88 +152,91 @@ const Dashboard = () => {
 
         {/* ✅ Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products?.map((product) => (
-            <Card key={product._id} className="shadow-sm">
-              <CardHeader>
-                <CardTitle>{product.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600">{product.description}</p>
-                <p className="text-sm font-bold mt-1">
-                  Price: ₹{product.price}
-                </p>
-                <p className="text-sm">Category: {product.category}</p>
-                <p className="text-xs text-gray-500">
-                  Created At: {new Date(product.createdAt).toLocaleDateString()}
-                </p>
-                {/* ✅ Action Buttons */}
-                <div className="flex gap-2 mt-4">
-                  <Dialog
-                    open={isViewModalOpen}
-                    onOpenChange={setIsViewModalOpen}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedProduct(product);
-                          setIsViewModalOpen(true);
-                        }}
-                      >
-                        <Eye size={16} className="mr-2" /> View
-                      </Button>
-                    </DialogTrigger>
-                    {selectedProduct && (
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Product Details</DialogTitle>
-                        </DialogHeader>
-                        <p>
-                          <strong>Name:</strong> {selectedProduct.name}
-                        </p>
-                        <p>
-                          <strong>Description:</strong>{" "}
-                          {selectedProduct.description}
-                        </p>
-                        <p>
-                          <strong>Price:</strong> ₹{selectedProduct.price}
-                        </p>
-                        <p>
-                          <strong>Category:</strong> {selectedProduct.category}
-                        </p>
-                        <p>
-                          <strong>Created At:</strong>{" "}
-                          {new Date(
-                            selectedProduct.createdAt
-                          ).toLocaleDateString()}
-                        </p>
-                      </DialogContent>
-                    )}
-                  </Dialog>
+          {products && Array.isArray(products.res) &&
+            products.res.map((product) => (
+              <Card key={product._id} className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>{product?.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-gray-600">{product.description}</p>
+                  <p className="text-sm font-bold mt-1">
+                    Price: ₹{product.price}
+                  </p>
+                  <p className="text-sm">Category: {product.category}</p>
+                  <p className="text-xs text-gray-500">
+                    Created At:{" "}
+                    {new Date(product.createdAt).toLocaleDateString()}
+                  </p>
+                  {/* ✅ Action Buttons */}
+                  <div className="flex gap-2 mt-4">
+                    <Dialog
+                      open={isViewModalOpen}
+                      onOpenChange={setIsViewModalOpen}
+                    >
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setIsViewModalOpen(true);
+                          }}
+                        >
+                          <Eye size={16} className="mr-2" /> View
+                        </Button>
+                      </DialogTrigger>
+                      {selectedProduct && (
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Product Details</DialogTitle>
+                          </DialogHeader>
+                          <p>
+                            <strong>Name:</strong> {selectedProduct.name}
+                          </p>
+                          <p>
+                            <strong>Description:</strong>{" "}
+                            {selectedProduct.description}
+                          </p>
+                          <p>
+                            <strong>Price:</strong> ₹{selectedProduct.price}
+                          </p>
+                          <p>
+                            <strong>Category:</strong>{" "}
+                            {selectedProduct.category}
+                          </p>
+                          <p>
+                            <strong>Created At:</strong>{" "}
+                            {new Date(
+                              selectedProduct.createdAt
+                            ).toLocaleDateString()}
+                          </p>
+                        </DialogContent>
+                      )}
+                    </Dialog>
 
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      setFormData(product);
-                      setIsFormModalOpen(true);
-                    }}
-                  >
-                    <Pencil size={16} className="mr-2" /> Edit
-                  </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => {
+                        setFormData(product);
+                        setIsFormModalOpen(true);
+                      }}
+                    >
+                      <Pencil size={16} className="mr-2" /> Edit
+                    </Button>
 
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => handleDelete(product._id)}
-                  >
-                    <Trash size={16} className="mr-2" /> Delete
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => handleDelete(product._id)}
+                    >
+                      <Trash size={16} className="mr-2" /> Delete
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
         </div>
       </div>
     </div>
