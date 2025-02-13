@@ -15,28 +15,27 @@ import { loginSchema } from "@/schemas/auth-schema";
 import TextInput from "@/common/form-inputs/text-input";
 import { Form } from "@/components/ui/form";
 import Link from "next/link";
-import {login} from '@/services/auth-service'
+import { login } from "@/services/auth-service";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({ className, ...props }) {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values) {
     try {
-      const data = await login(values);
-
-      console.log("data: ", data);
-
+      const { data } = await login(values);
+      localStorage.setItem("user", data?.user);
       toast.success(data?.message);
+      router.push("/dashboard");
     } catch (err) {
-
       toast.error("Something went wrong");
     }
   }
@@ -56,9 +55,9 @@ export function LoginForm({ className, ...props }) {
                   <div className="grid gap-2">
                     {/* <Label htmlFor="email">Email</Label> */}
                     <TextInput
-                      name="email"
-                      placeholder="Enter email."
-                      label="Email"
+                      name="username"
+                      placeholder="Enter username"
+                      label="Username"
                       control={form.control}
                     />
                   </div>

@@ -2,11 +2,11 @@
 import axios from "axios";
 
 export const signup = async (payload) => {
-  return axios.post("http://localhost:8000/api/register", payload);
+  return axios.post("/api/register", payload);
 };
 
 export const login = async (payload) => {
-  return axios.post("http://localhost:8000/api/login", payload);
+  return axios.post("/api/login", payload);
 };
 
 export const logout = async () => {

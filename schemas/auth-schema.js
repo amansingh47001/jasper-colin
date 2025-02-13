@@ -22,12 +22,12 @@ export const loginSchema = z.object({
 
 export const signupSchema = z
   .object({
-    firstName: z
+    firstname: z
       .string()
       .min(1, { message: "Please enter your first name." })
       .max(50, { message: "First name is too long." }),
 
-    lastName: z
+    lastname: z
       .string()
       .min(1, { message: "Please enter your last name." })
       .max(50, { message: "Last name is too long." }),

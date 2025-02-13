@@ -1,13 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-//   async rewrites() {
-//     return [
-//       {
-//         source: "/api",
-//         destination: "https://localhost:8000/api/",
-//       },
-//     ];
-//   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "http://localhost:8000/api/:path*", // Proxy to external API
+      },
+    ];
+  },
 };
 
 export default nextConfig;

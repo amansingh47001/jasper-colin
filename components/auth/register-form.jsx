@@ -10,36 +10,31 @@ import Link from "next/link";
 import { signup } from "@/services/auth-service";
 import toast from "react-hot-toast";
 
-export function RegisterForm({ className, ...props }) {
+export function RegisterForm({ className }) {
   const form = useForm({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      firstname: "",
+      lastname: "",
       username: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values) {
     try {
-      const data = await signup(values);
-
-      console.log("data: ", data);
-
+      const {data} = await signup(values);
       toast.success(data?.message);
     } catch (err) {
       console.log("Error: ", err);
-      toast.error("Something went wrong");
+      toast.error(err?.response?.data?.message || "Something went wrong");
     }
   }
   return (
     <Form {...form}>
       <form
         className={cn("flex flex-col gap-6", className)}
-        // {...props}
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <div className="flex flex-col items-center gap-2 text-center">
@@ -51,13 +46,13 @@ export function RegisterForm({ className, ...props }) {
         <div className="grid gap-6">
           <div className="grid grid-cols-2 gap-3">
             <TextInput
-              name="firstName"
+              name="firstname"
               placeholder="Enter first name."
               label="First Name"
               control={form.control}
             />
             <TextInput
-              name="lastName"
+              name="lastname"
               placeholder="Enter last name."
               label="Last Name"
               control={form.control}
