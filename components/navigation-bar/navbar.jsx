@@ -5,10 +5,18 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { logout } from "@/services/auth-service";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function Navbar() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+
   async function logoutUser() {
     try {
       const { data } = await logout();
@@ -26,17 +34,58 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between items-center">
+    <nav className="bg-white shadow-md p-2 flex justify-between items-center">
+      {/* <nav className="bg-white shadow-md p-4 flex justify-between items-center">
       <div>
         <h1 className="text-xl font-bold text-gray-800">
           {user?.firstname || "" } {user?.lastname || ""}
         </h1>
-        <p>{user?.username || ""}</p>
       </div>
 
       <Button variant="destructive" className="flex gap-2" onClick={logoutUser}>
         <LogOut size={16} /> Logout
       </Button>
+    </nav> */}
+
+      <div>
+        <h1 className="text-xl font-bold text-gray-800">
+          {user?.firstname || ""} {user?.lastname || ""}
+        </h1>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 h-12 p-2 border border-neutral-300"
+            >
+              <Avatar>
+                {/* <AvatarImage src="/user.png" alt="User Avatar" /> */}
+                <AvatarFallback>
+                  {user?.firstname?.charAt(0) + user?.lastname?.charAt(0) ||
+                    "U"}
+                </AvatarFallback>
+              </Avatar>
+              {user?.firstname || "User"} {user?.lastname || ""}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={logoutUser}>
+              <LogOut size={16} className="mr-2" /> Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* Logout */}
+        <Button
+          variant="destructive"
+          className="flex gap-2 h-12"
+          onClick={logoutUser}
+        >
+          <LogOut size={16} />
+        </Button>
+      </div>
     </nav>
   );
 }

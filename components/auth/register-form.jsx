@@ -24,7 +24,7 @@ export function RegisterForm({ className }) {
 
   async function onSubmit(values) {
     try {
-      const {data} = await signup(values);
+      const { data } = await signup(values);
       toast.success(data?.message);
     } catch (err) {
       console.log("Error: ", err);
@@ -71,6 +71,7 @@ export function RegisterForm({ className }) {
               name="password"
               placeholder="Enter password."
               label="Password"
+              type="password"
               control={form.control}
             />
           </div>
@@ -79,6 +80,7 @@ export function RegisterForm({ className }) {
               name="confirmPassword"
               placeholder="Confirm your password."
               label="Confirm Password"
+              type="password"
               control={form.control}
             />
           </div>

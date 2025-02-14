@@ -12,6 +12,6 @@ export const updateProduct = (id, payload) => {
   return axios.put(`/api/products/${id}`, payload);
 };
 
-export const deleteProduct = () => {
-  return axios.delete("/api/products/" + id, payload);
+export const deleteProduct = (id) => {
+  return axios.delete("/api/products/" + id);
 };

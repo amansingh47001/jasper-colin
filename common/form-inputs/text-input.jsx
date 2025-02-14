@@ -10,7 +10,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-export default function TextInput({ name, label, control, desc, placeholder }) {
+export default function TextInput({
+  name,
+  type,
+  label,
+  control,
+  desc,
+  placeholder,
+}) {
   return (
     <FormField
       control={control}
@@ -20,7 +27,12 @@ export default function TextInput({ name, label, control, desc, placeholder }) {
           <FormLabel>{label}</FormLabel>
           <FormDescription>{desc}</FormDescription>
           <FormControl>
-            <Input className="bg-white dark:bg-neutral-900" placeholder={placeholder} {...field} />
+            <Input
+              className="bg-white dark:bg-neutral-900"
+              placeholder={placeholder}
+              type={type}
+              {...field}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>

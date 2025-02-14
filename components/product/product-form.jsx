@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { Pencil, Plus } from "lucide-react";
 
-function ProductForm({ productValue = null, mode = "add", mutate }) {
+function ProductForm({ productValue = null, mode = "add", mutate }) { 
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const form = useForm({
     resolver: zodResolver(productSchema),
