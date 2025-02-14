@@ -1,12 +1,5 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Eye, Trash, ChevronLeft, ChevronRight } from "lucide-react";
+import { Trash, ChevronLeft, ChevronRight } from "lucide-react";
 import ProductForm from "./product-form";
+import ProductDetailsDialog from "./view-product";
 
 function ProductList({
   products,
@@ -89,36 +83,8 @@ function ProductList({
                 </span>
               </div>
               <div className="flex gap-2 p-4 border-t">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Eye size={16} className="mr-2" /> View
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle className="text-lg">
-                        Product Details
-                      </DialogTitle>
-                    </DialogHeader>
-                    <p>
-                      <strong>Name:</strong> {product.name}
-                    </p>
-                    <p>
-                      <strong>Description:</strong> {product.description}
-                    </p>
-                    <p>
-                      <strong>Price:</strong> ₹{product.price}
-                    </p>
-                    <p>
-                      <strong>Category:</strong> {product.category}
-                    </p>
-                    <p>
-                      <strong>Created At:</strong>{" "}
-                      {new Date(product.createdAt).toLocaleDateString()}
-                    </p>
-                  </DialogContent>
-                </Dialog>
+              <ProductDetailsDialog productId={product._id} />
+
                 <ProductForm productValue={product} mode="edit" mutate={mutate}  />
                 <Button
                   variant="destructive"
