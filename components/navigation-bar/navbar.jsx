@@ -34,18 +34,7 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white shadow-md p-2 flex justify-between items-center">
-      {/* <nav className="bg-white shadow-md p-4 flex justify-between items-center">
-      <div>
-        <h1 className="text-xl font-bold text-gray-800">
-          {user?.firstname || "" } {user?.lastname || ""}
-        </h1>
-      </div>
-
-      <Button variant="destructive" className="flex gap-2" onClick={logoutUser}>
-        <LogOut size={16} /> Logout
-      </Button>
-    </nav> */}
+        <nav className="sticky top-0 z-50 bg-white shadow-md p-2 flex justify-between items-center">
 
       <div>
         <h1 className="text-xl font-bold text-gray-800">
@@ -58,7 +47,7 @@ function Navbar() {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="flex items-center gap-2 h-12 p-2 border border-neutral-300"
+              className="flex items-center gap-2 h-12 p-2 border border-neutral-300/80"
             >
               <Avatar>
                 {/* <AvatarImage src="/user.png" alt="User Avatar" /> */}

@@ -7,85 +7,155 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Eye, Trash } from "lucide-react";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Eye, Trash, ChevronLeft, ChevronRight } from "lucide-react";
 import ProductForm from "./product-form";
 
-function ProductList({ products, handleDelete, mutate }) {
+function ProductList({
+  products,
+  handleDelete,
+  setSearch,
+  setCategory,
+  setSort,
+  setOrder,
+  setPage,
+  page,
+  order,
+  mutate,
+}) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2  md:grid-cols-3 xl:grid-cols-4 gap-6">
-      {products &&
-        Array.isArray(products.res) &&
-        products.res.map((product) => (
-          <Card key={product._id} className="shadow-sm flex flex-col h-full">
-            <CardHeader>
-              <CardTitle>{product?.name}</CardTitle>
-            </CardHeader>
+    <div className="space-y-6">
+      {/* Search & Filter Section */}
+      <div className="flex flex-wrap items-center gap-4">
+        <Input
+          placeholder="Search products..."
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full sm:w-64"
+        />
 
-            <CardContent className="flex-grow">
-              {/* Truncated Description */}
-              <p className="text-sm text-gray-600 line-clamp-3">
-                {product.description}
-              </p>
+        <Select onValueChange={(val) => setCategory(val === "all" ? "" : val)}>
+          <SelectTrigger className="w-full sm:w-48">
+            <SelectValue placeholder="Filter by category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Categories</SelectItem>
+            {Array.isArray(products?.categories) &&
+              products?.categories?.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
 
-              {/* Category Badge */}
-              <span className="inline-block bg-gray-200 text-gray-800 px-2 py-1 mt-2 rounded text-xs">
-                {product.category}
-              </span>
-            </CardContent>
+        <Button
+          variant="outline"
+          onClick={() => setOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
+        >
+          {order === "asc" ? "🔼 Ascending" : "🔽 Descending"}
+        </Button>
+      </div>
 
-            {/* Bottom Section with Price & Date */}
-            <div className="p-4 text-sm text-gray-500 flex justify-between">
-              <span className="text-gray-400">
-                Created At: {new Date(product.createdAt).toLocaleDateString()}
-              </span>
-              <span className="font-semibold text-gray-900">
-                ₹{product.price}
-              </span>
-            </div>
+      {/* Products Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 pb-20">
+        {Array.isArray(products?.res) &&
+          products?.res?.map((product) => (
+            <Card key={product._id} className="shadow-sm flex flex-col h-full">
+              <CardHeader>
+                <CardTitle>{product?.name}</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <p className="text-sm text-gray-600 line-clamp-3">
+                  {product.description}
+                </p>
+                <span className="inline-block bg-gray-200 text-gray-800 px-2 py-1 mt-2 rounded text-xs">
+                  {product.category}
+                </span>
+              </CardContent>
+              <div className="p-4 text-sm text-gray-500 flex justify-between">
+                <span className="text-gray-400">
+                  {new Date(product.createdAt).toLocaleDateString()}
+                </span>
+                <span className="font-semibold text-gray-900">
+                  ₹ {product.price}
+                </span>
+              </div>
+              <div className="flex gap-2 p-4 border-t">
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Eye size={16} className="mr-2" /> View
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle className="text-lg">
+                        Product Details
+                      </DialogTitle>
+                    </DialogHeader>
+                    <p>
+                      <strong>Name:</strong> {product.name}
+                    </p>
+                    <p>
+                      <strong>Description:</strong> {product.description}
+                    </p>
+                    <p>
+                      <strong>Price:</strong> ₹{product.price}
+                    </p>
+                    <p>
+                      <strong>Category:</strong> {product.category}
+                    </p>
+                    <p>
+                      <strong>Created At:</strong>{" "}
+                      {new Date(product.createdAt).toLocaleDateString()}
+                    </p>
+                  </DialogContent>
+                </Dialog>
+                <ProductForm productValue={product} mode="edit" mutate={mutate}  />
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDelete(product._id)}
+                >
+                  <Trash size={16} className="mr-2" /> Delete
+                </Button>
+              </div>
+            </Card>
+          ))}
+      </div>
 
-            {/* Footer Actions */}
-            <div className="flex gap-2 p-4 border-t">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Eye size={16} className="mr-2" /> View
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle className="text-lg">Product Details</DialogTitle>
-                  </DialogHeader>
-                  <p>
-                    <strong>Name:</strong> {product.name}
-                  </p>
-                  <p>
-                    <strong>Description:</strong> {product.description}
-                  </p>
-                  <p>
-                    <strong>Price:</strong> ₹{product.price}
-                  </p>
-                  <p>
-                    <strong>Category:</strong> {product.category}
-                  </p>
-                  <p>
-                    <strong>Created At:</strong>{" "}
-                    {new Date(product.createdAt).toLocaleDateString()}
-                  </p>
-                </DialogContent>
-              </Dialog>
-
-              <ProductForm productValue={product} mode="edit" mutate={mutate} />
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDelete("1")}
-              >
-                <Trash size={16} className="mr-2" /> Delete
-              </Button>
-            </div>
-          </Card>
-        ))}
+      {/* Fixed Pagination */}
+      <div className="fixed bottom-0 border-t-2 left-0 w-full bg-white shadow-md p-4 flex justify-between items-center">
+        <Button
+          disabled={page === 1}
+          onClick={() => setPage((prev) => prev - 1)}
+          className={
+            page === 1 ? "bg-gray-300 text-gray-600" : "bg-blue-600"
+          }
+        >
+          <ChevronLeft size={18} /> Prev
+        </Button>
+        <span>Page {page}</span>
+        <Button
+          disabled={!products?.hasNextPage}
+          onClick={() => setPage((prev) => prev + 1)}
+          className={
+            !products?.hasNextPage
+              ? "bg-gray-300 text-gray-600"
+              : "bg-blue-600"
+          }
+        >
+          Next <ChevronRight size={18} />
+        </Button>
+      </div>
     </div>
   );
 }
